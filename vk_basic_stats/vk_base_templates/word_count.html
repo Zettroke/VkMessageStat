@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block body %}
+<style>
+        .a1{
+            position: relative; width: 100%; margin: 5px 0
+        }
+        .a2{
+            position: absolute; left: 0; top: 0; background-color: #90caf9; height: 100%; z-index: -10
+        }
+        .a3{
+            margin: 5px;
+        }
+</style>
+{% for d in data %}
+<div class="a1">
+    <p class="a3">{{d.word}} - {{ d.count}}</p>
+    <div class="a2" style="width: {{ d.width }}%;"></div>
+</div>
+{% endfor %}
+
+{% endblock %}

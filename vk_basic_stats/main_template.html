@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css" rel="stylesheet">
+    <style>
+        th{
+            background-color: #4a76a8;
+            text-align: center;
+        }
+        td{
+            text-align: center;
+        }
+        tr{
+            border: none;
+        }
+        td, th{
+            border-radius: 0;
+        }
+        tr:nth-child(4n), tr:nth-child(4n+1){
+            background-color: #bbdefb;
+        }
+        tr:nth-child(2n){
+            font-size: 16pt;
+            border-top: 1px solid rgba(0,0,0,0.12);
+        }
+        tr:nth-child(2n+1){
+            font-size: 14pt;
+        }
+        /*td:nth-child(2){
+            width: 30%;
+        }*/
+
+
+        table{
+            border-collapse: collapse;
+            border-spacing: 0;
+            border: none;
+            text-align: center;
+            text-align: -moz-center;
+        }
+        h5{
+            font-weight: 500;
+            /*word-break: break-all;*/
+        }
+        a{
+            font-size: 14pt;
+        }
+    </style>
+
+
+    <!--<meta name="viewport" content="width=device-width, initial-scale=1">-->
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+
+<table style="width: 100%; text-align: center; position: fixed">
+    <tr>
+        <th style="padding: 5px 10px; "><img height="75px" src="{{ user1_photo }}"><h5 style="font-weight: 500">{{ user1_name }}</h5></th>
+        <th style="padding: 5px 10px; width: 30%">                        <h5 style="font-weight: 500;word-break: break-all;">Summary:</h5></th>
+        <th style="padding: 5px 10px; "><img height="75px" src="{{ user2_photo }}"><h5 style="font-weight: 500">{{ user2_name }}</h5></th>
+    </tr>
+</table>
+
+<table style="width: 100%; text-align: center">
+    <tr>
+        <th style="padding: 5px 10px; "><img height="75px" src="{{ user1_photo }}"><h5 style="font-weight: 500">{{ user1_name }}</h5></th>
+        <th style="padding: 5px 10px; width: 30%">                        <h5 style="font-weight: 500;word-break: break-all;">Summary:</h5></th>
+        <th style="padding: 5px 10px; "><img height="75px" src="{{ user2_photo }}"><h5 style="font-weight: 500">{{ user2_name }}</h5></th>
+    </tr>
+    {% for main_stat in main_stat_list %}
+    <tr>
+        <td></td>
+        <td class="">{{ main_stat.name }}</td>
+        <td></td>
+    </tr>
+    <tr>
+        <td>{{ main_stat.data[0] }}</td>
+        <td>{{ main_stat.data[1] }}</td>
+        <td>{{ main_stat.data[2] }}</td>
+    </tr>
+    {% endfor %}
+</table>
+
+<div style="padding-left: 10px">
+    <h5>Дополнительная статистика:</h5>
+    <ul class="browser-default">
+        {% for stat in stat_pages %}
+            <li><a href="{{ stat.link }}">{{ stat.name }}</a></li>
+        {% endfor %}
+    </ul>
+</div>
+</body>
+</html>

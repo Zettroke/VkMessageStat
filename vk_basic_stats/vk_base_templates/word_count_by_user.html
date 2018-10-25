@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% block body %}
+<style>
+    p{
+         margin: 5px;
+    }
+    .b{
+        height: 100%;
+        position:absolute;
+        top: 0;
+        background-color: #90caf9;
+        z-index: -10
+    }
+    .r{
+        left: 0;
+    }
+    .l{
+        right: 0;
+    }
+</style>
+<div style="display: flex">
+    <div style="width: 49.99%; border-right: 1px solid black">
+        {% for u1 in user1 %}
+        <div style="position: relative">
+            <div class="b l" style="width: {{ u1.width }}%"></div>
+            <p style="text-align: right;">{{u1.word}} - {{u1.count}} {% if u1.noramlized is defined %} ({{ u1.normalized }}) {% endif %}</p>
+        </div>
+        {% endfor %}
+    </div>
+
+    <div style="width: 49.99%; border-left: 1px solid black">
+        {% for u2 in user2 %}
+        <div style="position: relative">
+            <div class="b r" style="width: {{ u2.width }}%"></div>
+            <p>{{u2.word}} - {{u2.count}} {% if u2.noramlized is defined %} ({{ u2.normalized }}) {% endif %}</p>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

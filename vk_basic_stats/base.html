@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css" rel="stylesheet">
+    <!--<meta name="viewport" content="width=device-width, initial-scale=1">-->
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+
+<div style="display: flex; justify-content: space-evenly;background-color: #4a76a8; padding: 10px;position: relative">
+    <a class="btn" href="../result.html" style="position: absolute; top: 0; left: 0; background-color: #0d47a1">Back</a>
+    <div style="text-align: center; position: relative">
+        <img height="100px" src="{{ user1_photo }}"><h5>{{ user1_name }}</h5>
+    </div>
+    <div style="text-align: center; position: relative">
+        <img height="100px" src="{{ user2_photo }}"><h5>{{ user2_name }}</h5>
+    </div>
+</div>
+{% block body %}
+
+{% endblock %}
+
+</body>
+</html>
