@@ -5,9 +5,6 @@ from datetime import datetime
 import os
 from vk_messages_stats import stats
 
-print("template paths:", [os.path.join(stats.base_dir, 'vk_basic_stats/vk_base_templates'),
-                                           os.path.join(stats.base_dir, 'vk_basic_stats')])
-
 env = Environment(loader=FileSystemLoader([os.path.join(stats.base_dir, 'vk_basic_stats/vk_base_templates'),
                                            os.path.join(stats.base_dir, 'vk_basic_stats')]))
 env.globals = stats.template_globals
