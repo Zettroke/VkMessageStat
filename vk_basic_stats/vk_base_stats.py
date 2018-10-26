@@ -73,7 +73,7 @@ def stat_get_word_count_by_user():
             break
         words2.append({'word': wc[0], 'count': wc[1], 'width': mlt2 * wc[1] / total_words2 * 100, 'normalized': str(round(wc[1]/total_words2*norm, 1))})
 
-    return env.get_template("word_count_by_user.html").render(user1=words1, user2=words2)
+    return env.get_template("word_count_by_user.html").render(user1=words1, user2=words2, normalize=True)
 
 
 @stats.stat_decorator(name="Частота слов у пользователей (сгруппированна по слову)", filename="Word count by user (group by word)")
@@ -114,7 +114,7 @@ def stat_get_word_count_by_user_group_by_word():
         words1.append({'word': wc[0], 'count': wc[1][0], 'width': mlt1 * wc[1][0] / total_words1 * 100, 'normalized': str(round(wc[1][0]/total_words1*norm, 1))})
         words2.append({'word': wc[0], 'count': wc[1][1], 'width': mlt2 * wc[1][1] / total_words2 * 100, 'normalized': str(round(wc[1][1]/total_words2*norm, 1))})
 
-    return env.get_template("word_count_by_user.html").render(user1=words1, user2=words2)
+    return env.get_template("word_count_by_user.html").render(user1=words1, user2=words2, normalize=True)
 
 
 @stats.stat_decorator(name="Частота пар слов у пользователей", filename="Word pair count by user")
@@ -151,7 +151,7 @@ def stat_get_word_pair_count_by_user():
         wc = word_comb2[i]
         res2.append({'word': wc[0], 'count': wc[1], 'width': mlt2 * wc[1] / total_comb2 * 100})
 
-    return env.get_template("word_count_by_user.html").render(user1=res1, user2=res2)
+    return env.get_template("word_count_by_user.html").render(user1=res1, user2=res2, normalize=False)
 
 
 @stats.stat_decorator(name="График времени сообщений", filename="Message time graph")

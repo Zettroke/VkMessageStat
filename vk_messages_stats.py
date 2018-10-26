@@ -273,7 +273,8 @@ class VkStats:
         res = env.get_template('main_template.html').render(
             {
                 'stat_pages': page_list,
-                'main_stat_list': main_stat
+                'main_stat_list': main_stat['list'],
+                'vars': main_stat
             })
 
         open(os.path.join(result_folder, 'result.html'), "w", encoding='utf-8').write(res)
@@ -282,6 +283,7 @@ class VkStats:
         print("Statistics is done in {}s.".format(round(time.clock()-start_time, 3)))
 
     def main_stat(self):
+        ans = {}
         res = []
 
         # ------message_num-------
@@ -297,8 +299,8 @@ class VkStats:
         })
 
         res.append({
-            'name': "Слов в сообщение (в среднем)",
-            'data': (len(self.words_user1)/len(self.texts_user1), len(self.words)/len(self.texts), len(self.words_user2)/len(self.texts_user2))
+            'name': "Колчичество букв",
+            'data': (sum(map(len, self.words_user1)), sum(map(len, self.words)), sum(map(len, self.words_user2)))
         })
 
         # ------unique_word_num-----
@@ -308,17 +310,18 @@ class VkStats:
         })
 
         res.append({
+            'name': "Слов в сообщение (в среднем)",
+            'data': (len(self.words_user1) / len(self.texts_user1), len(self.words) / len(self.texts),
+                     len(self.words_user2) / len(self.texts_user2))
+        })
+
+        res.append({
             'name': "Уникальных слов в сообщение (в среднем)",
             'data': (
                 len(set(self.words_user1))/len(self.texts_user1),
                 len(set(self.words))/len(self.texts),
                 len(set(self.words_user2))/len(self.texts_user2)
                      )
-        })
-
-        res.append({
-            'name': "Колчичество букв",
-            'data': (sum(map(len, self.words_user1)), sum(map(len, self.words)), sum(map(len, self.words_user2)))
         })
 
         res.append({
@@ -350,10 +353,71 @@ class VkStats:
             )
         })
 
+        cnt1 = 0
+        for msg in self.message_list_user1:
+            if "fwd_messages" in msg:
+                cnt1 += len(msg["fwd_messages"])
+        cnt2 = 0
+        for msg in self.message_list_user2:
+            if "fwd_messages" in msg:
+                cnt2 += len(msg["fwd_messages"])
+
+        res.append({
+            'name': "Количество пересланных сообщений",
+            'data': (
+                cnt1,
+                cnt1+cnt2,
+                cnt2)
+        })
+
+        att_types = {"photo", 'video', 'audio', 'doc', 'audio_doc', 'audio_message'}
+        u1_attach = {"photo": 0, 'video': 0, 'audio': 0, 'doc': 0, 'audio_doc': 0}
+        u2_attach = {"photo": 0, 'video': 0, 'audio': 0, 'doc': 0, 'audio_doc': 0}
+        cnts = []
+        for msg_list, attach_dict in ((self.message_list_user1, u1_attach), (self.message_list_user2, u2_attach)):
+            cnt = 0
+            for msg in msg_list:
+                if "attachments" in msg:
+                    cnt += len(msg["attachments"])
+                    for att in msg['attachments']:
+                        if att['type'] in att_types:
+                            if att['type'] == 'doc':
+                                if 'preview' in att['doc'] and 'audio_msg' in att['doc']['preview']:
+                                    attach_dict['audio_doc'] += 1
+                                else:
+                                    attach_dict['doc'] += 1
+                            elif att['type'] == 'audio_message':
+                                attach_dict['audio_doc'] += 1
+                            else:
+                                attach_dict[att['type']] += 1
+            cnts.append(cnt)
+
+        cnt1, cnt2 = cnts
+        for msg in self.message_list_user2:
+            if "attachments" in msg:
+                cnt2 += len(msg["attachments"])
+
+        res.append({
+            'name': "Количество вложений",
+            'data': (
+                cnt1,
+                cnt1 + cnt2,
+                cnt2
+            ),
+            'attachments': True
+        })
+
+        ans['attach_graph'] = {
+            'user1': u1_attach,
+            'user2': u2_attach
+        }
+
         for i in res:
             i['data'] = [round(x, 3) if type(x) == float else x for x in i['data']]
 
-        return res
+        ans['list'] = res
+
+        return ans
 
 
 stats = VkStats()
