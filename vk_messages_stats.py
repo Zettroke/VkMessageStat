@@ -6,6 +6,7 @@ from importlib import import_module
 from jinja2 import Environment, FileSystemLoader
 import re
 from threading import Thread, RLock, Lock
+import sys
 import itertools
 
 
@@ -81,6 +82,8 @@ class VkStats:
     template_globals = {}
 
     settings = {'max_entry_on_page': 2000}
+
+    base_dir = '.'
 
     _stat_list = []
     _normalized_word_re = re.compile('[^a-zA-Zа-яА-Я]')
@@ -227,8 +230,7 @@ class VkStats:
         self.texts_user1 = list(map(lambda x: x['body'], self.message_list_user1))
         self.texts_user2 = list(map(lambda x: x['body'], self.message_list_user2))
 
-        for txts, res in (
-        (self.texts, self.words), (self.texts_user1, self.words_user1), (self.texts_user2, self.words_user2)):
+        for txts, res in ((self.texts, self.words), (self.texts_user1, self.words_user1), (self.texts_user2, self.words_user2)):
             for text in txts:
                 for w in map(self.get_normalized_word, text.split()):
                     if w:
@@ -237,7 +239,6 @@ class VkStats:
         _done()
 
     def make_stats(self, access_token, user_id, stat_libs, result_folder='result'):
-
         self._setup(access_token, user_id)
 
         start_time = time.clock()
@@ -266,7 +267,7 @@ class VkStats:
                 open(n, "w", encoding='utf-8').write(res)
             _done()
 
-        env = Environment(loader=FileSystemLoader(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'vk_basic_stats')))
+        env = Environment(loader=FileSystemLoader(os.path.join(self.base_dir, 'vk_basic_stats')))
         env.globals = self.template_globals
 
         res = env.get_template('main_template.html').render(
@@ -356,3 +357,8 @@ class VkStats:
 
 
 stats = VkStats()
+
+if getattr(sys, 'frozen', False):
+    stats.base_dir = sys._MEIPASS
+else:
+    stats.base_dir = os.path.dirname(os.path.abspath(__file__))
