@@ -140,7 +140,6 @@ class GUI:
 
         self.root.after(200, lambda: webbrowser.open("https://zettroke.github.io/VkMessageStat/login_page"))
 
-
     def logged_in(self):
         Style().configure("Login.TLabel", foreground="#4caf50")
         open('access_token', 'w').write(self.access_token)
