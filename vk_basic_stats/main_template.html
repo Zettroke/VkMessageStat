@@ -101,6 +101,13 @@
         {% endfor %}
     </ul>
 </div>
+<hr>
+<div style="width: 100%; height: 100px; display: flex; justify-content: center; align-items: center;">
+
+    <span style="margin: 10px">Author: <a href="https://vk.com/zettroke">Zettroke</a></span>
+    <span style="margin: 10px">Github: <a href="https://github.com/Zettroke/VkMessageStat">VkMessageStat</a></span>
+
+</div>
 
 <script>
     ctx_user2 = document.getElementById('donut_graph_user2');
@@ -128,7 +135,15 @@
                 'Голосовое сообщение'
             ],
 
+        },
+        options: {
+            legend: {
+                labels: {
+                    fontSize: 16
+                }
         }
+
+    }
     });
     attach_graph_user2 = new Chart(document.getElementById('attach_graph_user2'), {
         type: 'doughnut',
@@ -151,6 +166,13 @@
                 'Голосовое сообщение'
             ],
 
+        },
+        options: {
+            legend: {
+                labels: {
+                    fontSize: 16
+                }
+            }
         }
     })
 </script>
