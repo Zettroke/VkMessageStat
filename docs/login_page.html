@@ -6,17 +6,45 @@
     <title>Login for VkMessageStat</title>
 </head>
 <body>
+<button class="btn" style="position: fixed; bottom: 0; right: 0; margin: 25px;font-size: 1.72rem;" onclick="go_login()">Войти</button>
 <div style="background-color: #4a76a8; padding: 10px">
 <h1 style="margin: 10px">VkMessageStat</h1>
 </div>
 <h3 style="margin-left: 20px">Инструкция по входу:</h3>
-<div style="margin: 20px">
-    <div style="width: 33%">
+<div style="margin: 20px; display: flex">
+    <div style="width: 30%; border-right: 1px #ccc solid; padding: 0 8px">
         <div style="border-radius: 50%; border: 5px #f44336 solid; width: 60px; height: 60px; text-align: center">
             <h3 style="margin: 0">1</h3>
         </div>
         <p class="flow-text">Что бы составить статистику по вашим диалогам вам необходимо дать доступ для программы к вашим диалогам</p>
+        <p class="flow-text">Для начала нажмите кнопку "Войти". В новой вкладке откроется страница где вы можете дать этот доступ. Переходите к шагу 2</p>
     </div>
+    <div style="width: 33%; border-right: 1px #ccc solid; padding: 0 8px">
+        <div style="border-radius: 50%; border: 5px #f44336 solid; width: 60px; height: 60px; text-align: center">
+            <h3 style="margin: 0">2</h3>
+        </div>
+        <p class="flow-text">Если вы не вошли вконтакте, то войдите введя свои данные. После чего появится окно для выдачи разрешения.</p>
+        <img class="z-depth-1" src="permission.jpg" style="max-width: 100%">
+        <p class="flow-text">Нажмите разрешить. Вас перенаправит на другую страницу. Переходите к шагу 3</p>
+
+    </div>
+    <div style="width: 36%; padding: 0 8px">
+        <div style="border-radius: 50%; border: 5px #f44336 solid; width: 60px; height: 60px; text-align: center">
+            <h3 style="margin: 0">3</h3>
+        </div>
+        <p class="flow-text">Вас перенаприт на почти пустую страницу показанную ниже</p>
+        <img class="z-depth-1" src="blank_page_vk.png" style="max-width: 100%">
+        <p class="flow-text">Вы должны скопировать адрес этой странице и вставить в поле для ввода в программе.</p>
+        <img class="z-depth-1" src="enter_login.png" style="max-width: 100%">
+
+    </div>
+</div>
+<hr>
+<div>
+<blockquote class="flow-text">Но там же написано никуда не копировать данные из адресной строки?</blockquote>
+        <p class="flow-text">Да все так. В адресной строке находится специальный ключ, который позволяет делать все то, что вы разрешили ранее.
+        В данном случае читать ваши сообщения. Ваш ключ будет храниться на диске в файле access_token. Ключ никуда не отправляется.
+        Так как исходный код программы открыт, вы можете это проверить. Подробнее *гитхаб ссылка*</p>
 </div>
 
 

@@ -1,6 +1,7 @@
 from tkinter import Tk, RIGHT, LEFT, TOP, DISABLED, NORMAL, Toplevel, Menu, INSERT, Listbox, END, VERTICAL, Y, BOTH, Text, X, ALL, DoubleVar
 from tkinter.ttk import Entry, Button, Label, Style, Frame, Scrollbar, Progressbar
 
+import sys
 import webbrowser
 import os
 import requests
@@ -10,10 +11,16 @@ from threading import Thread
 
 from vk_messages_stats import stats
 
+if getattr(sys, 'frozen', False):
+    base_dir = sys._MEIPASS
+else:
+    base_dir = os.path.dirname(os.path.abspath(__file__))
 
 class GUI:
     def __init__(self):
         self.root = Tk()
+        self.root.title("VkMessageStat")
+        self.root.iconbitmap(os.path.join(base_dir, "icon.ico"))
         self.root.geometry('661x617')
         Style().configure("Login.TLabel", foreground="#777777", font=("Arial", 12))
 
@@ -71,6 +78,8 @@ class GUI:
 
     def proceed_login(self):
         t = Toplevel(self.root)
+        t.iconbitmap(os.path.join(base_dir, "icon.ico"))
+        t.title("Login")
         Style().configure("Error.TLabel", foreground="#f44336")
         link_check = re.compile('https:\/\/oauth\.vk\.com\/blank\.html#access_token=[a-z0-9]*&expires_in=[0-9]*&user_id=[0-9]*')
 
