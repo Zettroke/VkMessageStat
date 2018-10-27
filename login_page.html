@@ -1,12 +1,28 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css" rel="stylesheet">
     <meta charset="UTF-8">
     <title>Login for VkMessageStat</title>
 </head>
 <body>
+<div style="background-color: #4a76a8; padding: 10px">
+<h1 style="margin: 10px">VkMessageStat</h1>
+</div>
+<h3 style="margin-left: 20px">Инструкция по входу:</h3>
+<div style="margin: 20px">
+    <div style="width: 33%">
+        <div style="border-radius: 50%; border: 5px #f44336 solid; width: 60px; height: 60px; text-align: center">
+            <h3 style="margin: 0">1</h3>
+        </div>
+        <p class="flow-text">Что бы составить статистику по вашим диалогам вам необходимо дать доступ для программы к вашим диалогам</p>
+    </div>
+</div>
+
+
 <script>
-    window.location.href = "https://oauth.vk.com/authorize?client_id=6731752&scope=4096&response_type=token&v=5.87"
+    function go_login(){window.location.href = "https://oauth.vk.com/authorize?client_id=6731752&scope=4096&response_type=token&v=5.87"}
+
 </script>
 </body>
 </html>
