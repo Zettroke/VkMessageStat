@@ -138,7 +138,7 @@ class GUI:
 
         e.bind("<Button-3>", do_popup)
 
-        self.root.after(500, lambda: webbrowser.open("https://oauth.vk.com/authorize?client_id=6731752&scope=4096&response_type=token&v=5.87"))
+        self.root.after(200, lambda: webbrowser.open("https://zettroke.github.io/VkMessageStat/login_page"))
 
 
     def logged_in(self):
