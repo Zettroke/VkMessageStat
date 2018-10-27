@@ -70,11 +70,13 @@
         <td class="">{{ main_stat.name }}</td>
         <td></td>
     </tr>
+    {% if main_stat.data is defined %}
     <tr style="{% if loop.index is even %}background-color: #bbdefb;{% endif %} font-size: 14pt;">
         <td>{{ main_stat.data[0] }}</td>
         <td>{{ main_stat.data[1] }}</td>
         <td>{{ main_stat.data[2] }}</td>
     </tr>
+    {% endif %}
     {% if main_stat.attachments %}
 
         <tr style="{% if loop.index is even %}background-color: #bbdefb;{% endif %}">
@@ -89,6 +91,14 @@
                 </div>
             </td>
         </tr>
+    {% endif %}
+    {% if main_stat.stickers %}
+        <tr style="{% if loop.index is even %}background-color: #bbdefb;{% endif %}">
+            <td><img src="{{ main_stat.user1_sticker }}"></td>
+            <td></td>
+            <td><img src="{{ main_stat.user2_sticker }}"></td>
+        </tr>
+
     {% endif %}
     {% endfor %}
 </table>
@@ -117,13 +127,14 @@
         type: 'doughnut',
         data: {
             datasets: [{
-                data: [{{ user1_attach.photo }}, {{ user1_attach.video }}, {{ user1_attach.audio }}, {{ user1_attach.doc }}, {{ user1_attach.audio_doc }}],
+                data: [{{ user1_attach.photo }}, {{ user1_attach.video }}, {{ user1_attach.audio }}, {{ user1_attach.doc }}, {{ user1_attach.audio_doc }}, {{ user1_attach.sticker }}],
                 backgroundColor: [
-                '#64b5f6',
-                '#4dd0e1',
-                '#81c784',
-                '#dce775',
-                '#ffb74d'
+                    '#64b5f6',
+                    '#4dd0e1',
+                    '#81c784',
+                    '#dce775',
+                    '#ffb74d',
+                    '#e57373'
                 ]
             }
             ],
@@ -132,7 +143,8 @@
                 'Видео',
                 'Аудио',
                 'Документ',
-                'Голосовое сообщение'
+                'Голосовое сообщение',
+                'Стикер'
             ],
 
         },
@@ -149,13 +161,14 @@
         type: 'doughnut',
         data: {
             datasets: [{
-                data: [{{ user2_attach.photo }}, {{ user2_attach.video }}, {{ user2_attach.audio }}, {{ user2_attach.doc }}, {{ user2_attach.audio_doc }}],
+                data: [{{ user2_attach.photo }}, {{ user2_attach.video }}, {{ user2_attach.audio }}, {{ user2_attach.doc }}, {{ user2_attach.audio_doc }}, {{ user2_attach.sticker }}],
                 backgroundColor: [
-                '#64b5f6',
-                '#4dd0e1',
-                '#81c784',
-                '#dce775',
-                '#ffb74d'
+                    '#64b5f6',
+                    '#4dd0e1',
+                    '#81c784',
+                    '#dce775',
+                    '#ffb74d',
+                    '#e57373'
                 ]
             }],
             labels: [
@@ -163,7 +176,8 @@
                 'Видео',
                 'Аудио',
                 'Документ',
-                'Голосовое сообщение'
+                'Голосовое сообщение',
+                'Стикер'
             ],
 
         },

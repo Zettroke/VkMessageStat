@@ -370,12 +370,15 @@ class VkStats:
                 cnt2)
         })
 
-        att_types = {"photo", 'video', 'audio', 'doc', 'audio_doc', 'audio_message'}
-        u1_attach = {"photo": 0, 'video': 0, 'audio': 0, 'doc': 0, 'audio_doc': 0}
-        u2_attach = {"photo": 0, 'video': 0, 'audio': 0, 'doc': 0, 'audio_doc': 0}
+        att_types = {"photo", 'video', 'audio', 'doc', 'audio_doc', 'audio_message', 'sticker'}
+        u1_attach = {"photo": 0, 'video': 0, 'audio': 0, 'doc': 0, 'audio_doc': 0, 'sticker': 0}
+        u2_attach = {"photo": 0, 'video': 0, 'audio': 0, 'doc': 0, 'audio_doc': 0, 'sticker': 0}
         cnts = []
+        sticker_list = []
+        sticker_links = {}
         for msg_list, attach_dict in ((self.message_list_user1, u1_attach), (self.message_list_user2, u2_attach)):
             cnt = 0
+            stikers = {}
             for msg in msg_list:
                 if "attachments" in msg:
                     cnt += len(msg["attachments"])
@@ -388,9 +391,15 @@ class VkStats:
                                     attach_dict['doc'] += 1
                             elif att['type'] == 'audio_message':
                                 attach_dict['audio_doc'] += 1
+                            elif att['type'] == 'sticker':
+                                attach_dict['sticker'] += 1
+                                sticker_name = '_'.join([str(att['sticker']['product_id']), str(att['sticker']['sticker_id'])])
+                                sticker_links[sticker_name] = att['sticker']['images_with_background'][2]['url']
+                                stikers[sticker_name] = stikers.get(sticker_name, 0) + 1
                             else:
                                 attach_dict[att['type']] += 1
             cnts.append(cnt)
+            sticker_list.append(stikers)
 
         cnt1, cnt2 = cnts
         for msg in self.message_list_user2:
@@ -406,14 +415,22 @@ class VkStats:
             ),
             'attachments': True
         })
-
         ans['attach_graph'] = {
             'user1': u1_attach,
             'user2': u2_attach
         }
 
+        res.append({
+            'name': "Самый популярный стикер",
+            'stickers': True,
+            'user1_sticker': sticker_links[max(sticker_list[0].items(), key=lambda x: x[1])[0]],
+            'user2_sticker': sticker_links[max(sticker_list[1].items(), key=lambda x: x[1])[0]]
+        })
+
+
         for i in res:
-            i['data'] = [round(x, 3) if type(x) == float else x for x in i['data']]
+            if 'data' in i:
+                i['data'] = [round(x, 3) if type(x) == float else x for x in i['data']]
 
         ans['list'] = res
 

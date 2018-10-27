@@ -59,6 +59,7 @@ def get_user_data():
     return access_token, user_id
 
 try:
+
     access_token, user_id = get_user_data()
     history_file_name = "messages/messages.json"
     stat_libs = ['vk_basic_stats.vk_base_stats']
@@ -66,7 +67,7 @@ try:
     stats.make_stats(access_token, user_id, stat_libs)
 
     webbrowser.open('file:///' + os.path.abspath('result/result.html'))
-    p = input("Press any key to exit....")
+    # p = input("Press any key to exit....")
 
 except Exception as e:
     traceback.print_exception(tb=sys.exc_info()[2], etype=type(e), value=e)
