@@ -17,13 +17,6 @@
         td, th{
             border-radius: 0;
         }
-        tr:nth-child(2n+1){
-
-        }
-        /*td:nth-child(2){
-            width: 30%;
-        }*/
-
 
         table{
             border-collapse: collapse;
@@ -51,16 +44,16 @@
 
 <table style="width: 100%; text-align: center; position: fixed; ">
     <tr>
-        <th style="padding: 5px 10px;background-color: #4a76a8;text-align: center; "><img height="75px" src="{{ user1_photo }}"><h5 style="font-weight: 500">{{ user1_name }}</h5></th>
-        <th style="padding: 5px 10px;background-color: #4a76a8;text-align: center; width: 30%">                                           <h5 style="font-weight: 500;word-break: break-all;">Summary:</h5></th>
-        <th style="padding: 5px 10px;background-color: #4a76a8;text-align: center; "><img height="75px" src="{{ user2_photo }}"><h5 style="font-weight: 500">{{ user2_name }}</h5></th>
+        <th id="tth1" style="padding: 5px 10px; "><img height="75px" src="{{ user1_photo }}"><h5 style="font-weight: 500">{{ user1_name }}</h5></th>
+        <th style="padding: 5px 10px; width: 30%">                                 <h5 style="font-weight: 500;word-break: break-all;">Summary:</h5></th>
+        <th style="padding: 5px 10px; "><img height="75px" src="{{ user2_photo }}"><h5 style="font-weight: 500">{{ user2_name }}</h5></th>
     </tr>
 </table>
 
 <table style="width: 100%; text-align: center">
     <tr>
-        <th style="padding: 5px 10px; "><img height="75px" src="{{ user1_photo }}"><h5 style="font-weight: 500">{{ user1_name }}</h5></th>
-        <th style="padding: 5px 10px; width: 30%">                                           <h5 style="font-weight: 500;word-break: break-all;">Summary:</h5></th>
+        <th id="th1" style="padding: 5px 10px; "><img height="75px" src="{{ user1_photo }}"><h5 style="font-weight: 500">{{ user1_name }}</h5></th>
+        <th style="padding: 5px 10px; width: 30%">                                 <h5 style="font-weight: 500;word-break: break-all;">Summary:</h5></th>
         <th style="padding: 5px 10px; "><img height="75px" src="{{ user2_photo }}"><h5 style="font-weight: 500">{{ user2_name }}</h5></th>
     </tr>
     {% for main_stat in main_stat_list %}
@@ -81,7 +74,7 @@
 
         <tr style="{% if loop.index is even %}background-color: #bbdefb;{% endif %}">
             <td colspan="3">
-                <div style="display: flex">
+                <div style="display: flex; justify-content: space-evenly">
                     <div style="width: 49%">
                         <canvas id="attach_graph_user1"></canvas>
                     </div>
@@ -121,13 +114,20 @@
 
 <script>
     ctx_user2 = document.getElementById('donut_graph_user2');
-    {% set user1_attach = vars.attach_graph.user1 %}
-    {% set user2_attach = vars.attach_graph.user2 %}
+    {% set user1_attach = vars.attach_graph_data.user1 %}
+    {% set user2_attach = vars.attach_graph_data.user2 %}
     attach_graph_user1 = new Chart(document.getElementById('attach_graph_user1'), {
         type: 'doughnut',
         data: {
             datasets: [{
-                data: [{{ user1_attach.photo }}, {{ user1_attach.video }}, {{ user1_attach.audio }}, {{ user1_attach.doc }}, {{ user1_attach.audio_doc }}, {{ user1_attach.sticker }}],
+                data: [
+                    {{ user1_attach.photo }},
+                    {{ user1_attach.video }},
+                    {{ user1_attach.audio }},
+                    {{ user1_attach.doc }},
+                    {{ user1_attach.audio_doc }},
+                    {{ user1_attach.sticker }}
+                ],
                 backgroundColor: [
                     '#64b5f6',
                     '#4dd0e1',
@@ -161,7 +161,14 @@
         type: 'doughnut',
         data: {
             datasets: [{
-                data: [{{ user2_attach.photo }}, {{ user2_attach.video }}, {{ user2_attach.audio }}, {{ user2_attach.doc }}, {{ user2_attach.audio_doc }}, {{ user2_attach.sticker }}],
+                data: [
+                    {{ user2_attach.photo }},
+                    {{ user2_attach.video }},
+                    {{ user2_attach.audio }},
+                    {{ user2_attach.doc }},
+                    {{ user2_attach.audio_doc }},
+                    {{ user2_attach.sticker }}
+                ],
                 backgroundColor: [
                     '#64b5f6',
                     '#4dd0e1',
@@ -188,7 +195,19 @@
                 }
             }
         }
-    })
+    });
+
+    // Fix
+    th1 = document.getElementById('th1');
+    tth1 = document.getElementById('tth1');
+    function resize(event) {
+        tth1.style.width = th1.clientWidth + 'px'
+    }
+    window.onresize = resize;
+    resize();
+    setTimeout(resize, 250);
+
+
 </script>
 </body>
 </html>

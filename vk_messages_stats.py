@@ -10,54 +10,6 @@ import sys
 import itertools
 
 
-class Progresser(Thread):
-    _l = Lock()
-    _dot_cnt = 0
-
-    _last_messages = ''
-    _start_time = 0
-
-    def __init__(self):
-        super().__init__(daemon=True)
-        self._l.acquire()
-        self.start()
-
-    def run(self):
-        while True:
-            self._l.acquire()
-            self._dot_cnt += 1
-            if self._dot_cnt > 5:
-                self._dot_cnt = 1
-            print('\r' + self._last_message + '.' * self._dot_cnt, end='')
-            self._l.release()
-            time.sleep(0.3)
-
-    def progress_message(self, message):
-        self._start_time = time.clock()
-        print(message, end='')
-        self._last_message = message
-        self._l.release()
-
-    def done(self, message):
-        self._l.acquire()
-        print('\r' + self._last_message + message)
-
-    def done_auto(self):
-        self._l.acquire()
-        print('\r' + self._last_message + 'done in {}s.'.format(round(time.clock()-self._start_time, 3)))
-
-
-_progresser = Progresser()
-
-
-def _msg(message):
-    _progresser.progress_message(message)
-
-
-def _done():
-    _progresser.done_auto()
-
-
 class VkStats:
     message_list = []
     message_list_user1 = []
@@ -87,6 +39,23 @@ class VkStats:
 
     _stat_list = []
     _normalized_word_re = re.compile('[^a-zA-Zа-яА-Я]')
+
+    _timer = 0
+
+    def _post_progress(self, frac):
+        print("{}%".format(frac*100))
+
+    # can be replaced with another function
+    def _post_message(self, message):
+        print(message, end='')
+
+    def post_message(self, message):
+        self._timer = time.clock()
+        self._post_message(">" + message)
+
+    def done_message(self):
+        delta = time.clock()-self._timer
+        self._post_message('done in {:.3f}s\n'.format(round(delta, 3)))
 
     def get_normalized_word(self, word):
         """
@@ -143,7 +112,7 @@ class VkStats:
                 cnt = 0
 
             _done()
-            print("Added {} messages".format(cnt))
+            _msg("Added {} messages\n".format(cnt))
             return msg_list
 
         else:
@@ -158,21 +127,27 @@ class VkStats:
             for offset in range(0, cnt+1, 200):
                 start = time.clock()
 
-                r = requests.get(url.format(access_token, user_id=user_id, offset=offset, count=200))
-                js = r.json()
-                msg_list.extend(js['response']['items'])
-                print('{}%'.format(round((min(offset+200, cnt))/cnt*100, 2)))
+                while True:
+                    r = requests.get(url.format(access_token, user_id=user_id, offset=offset, count=200))
+                    js = r.json()
+                    if 'response' in js:
+                        msg_list.extend(js['response']['items'])
+                        self._post_progress(round((min(offset+200, cnt))/cnt, 2))
+                        break
+                    else:
+                        print("error: {}".format(js['error']))
+                        time.sleep(0.3)
 
                 taken = time.clock() - start
-                if taken < 0.3:
+                if taken < 0.4:
                     time.sleep(0.4-taken)
             if history_file_name:
                 try:
                     json.dump(msg_list, open(history_file_name, "w", encoding='utf-8'), ensure_ascii=False, indent=2)
                 except Exception:
                     print("Can't cache messages")
-            print("Done in {}s.".format(round(time.clock()-start_all, 3)))
-            print("Got {} messages.".format(len(msg_list)))
+            _msg("Done in {}s.\n".format(round(time.clock()-start_all, 3)))
+            _msg("Got {} messages.\n".format(len(msg_list)))
             return msg_list
 
     def stat_decorator(self, name="Stat name", filename=None):
@@ -238,7 +213,15 @@ class VkStats:
 
         _done()
 
-    def make_stats(self, access_token, user_id, stat_libs, result_folder='result'):
+    def make_stats(self, access_token, user_id, stat_libs, result_folder='result',
+                   post_message_func=None, post_progress_func=None, callback=None):
+
+        if post_message_func:
+            self._post_message = post_message_func
+        if post_progress_func:
+            self._post_progress = post_progress_func
+
+
         self._setup(access_token, user_id)
 
         start_time = time.clock()
@@ -279,8 +262,10 @@ class VkStats:
 
         open(os.path.join(result_folder, 'result.html'), "w", encoding='utf-8').write(res)
 
-        print()
-        print("Statistics is done in {}s.".format(round(time.clock()-start_time, 3)))
+        _msg("Statistics is done in {}s.\n".format(round(time.clock()-start_time, 3)))
+
+        if callback:
+            callback()
 
     def main_stat(self):
         ans = {}
@@ -298,15 +283,15 @@ class VkStats:
             'data': (len(self.words_user1), len(self.words), len(self.words_user2))
         })
 
-        res.append({
-            'name': "Колчичество букв",
-            'data': (sum(map(len, self.words_user1)), sum(map(len, self.words)), sum(map(len, self.words_user2)))
-        })
-
         # ------unique_word_num-----
         res.append({
             'name': "Колчичество уникальных слов",
             'data': (len(set(self.words_user1)), len(set(self.words)), len(set(self.words_user2)))
+        })
+
+        res.append({
+            'name': "Колчичество букв",
+            'data': (sum(map(len, self.words_user1)), sum(map(len, self.words)), sum(map(len, self.words_user2)))
         })
 
         res.append({
@@ -394,7 +379,7 @@ class VkStats:
                             elif att['type'] == 'sticker':
                                 attach_dict['sticker'] += 1
                                 sticker_name = '_'.join([str(att['sticker']['product_id']), str(att['sticker']['sticker_id'])])
-                                sticker_links[sticker_name] = att['sticker']['images_with_background'][2]['url']
+                                sticker_links[sticker_name] = att['sticker']['images_with_background'][2]['url']  # 256x256 image
                                 stikers[sticker_name] = stikers.get(sticker_name, 0) + 1
                             else:
                                 attach_dict[att['type']] += 1
@@ -415,18 +400,18 @@ class VkStats:
             ),
             'attachments': True
         })
-        ans['attach_graph'] = {
+        ans['attach_graph_data'] = {
             'user1': u1_attach,
             'user2': u2_attach
         }
 
+        # stickers
         res.append({
             'name': "Самый популярный стикер",
             'stickers': True,
             'user1_sticker': sticker_links[max(sticker_list[0].items(), key=lambda x: x[1])[0]],
             'user2_sticker': sticker_links[max(sticker_list[1].items(), key=lambda x: x[1])[0]]
         })
-
 
         for i in res:
             if 'data' in i:
@@ -443,3 +428,13 @@ if getattr(sys, 'frozen', False):
     stats.base_dir = sys._MEIPASS
 else:
     stats.base_dir = os.path.dirname(os.path.abspath(__file__))
+
+
+# shortcut
+def _msg(message):
+    stats.post_message(message)
+
+
+# shortcut
+def _done():
+    stats.done_message()

@@ -64,7 +64,10 @@ try:
     history_file_name = "messages/messages.json"
     stat_libs = ['vk_basic_stats.vk_base_stats']
 
+    out = open('out.txt', "w", encoding='utf-8')
     stats.make_stats(access_token, user_id, stat_libs)
+
+    out.close()
 
     webbrowser.open('file:///' + os.path.abspath('result/result.html'))
     # p = input("Press any key to exit....")
