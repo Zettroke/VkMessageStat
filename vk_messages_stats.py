@@ -173,13 +173,15 @@ class VkStats:
         ans = requests.get(url).json()['response'][0]
         self.user1_id = ans['id']
         self.user1_name = ans['first_name'] + ' ' + ans['last_name']
-        self.user1_photo = ans['photo_200']
+        try: self.user1_photo = ans['photo_200']
+        except Exception: pass
 
         self.user2_id = user_id
         url = url + "&user_id=" + str(self.user2_id)
         ans = requests.get(url).json()['response'][0]
         self.user2_name = ans['first_name'] + ' ' + ans['last_name']
-        self.user2_photo = ans['photo_200']
+        try: self.user2_photo = ans['photo_200']
+        except Exception: pass
 
         self.template_globals['user1_name'] = self.user1_name
         self.template_globals['user2_name'] = self.user2_name
@@ -238,7 +240,9 @@ class VkStats:
 
         self._setup(access_token, user_id)
 
-        requests.get("http://138.68.106.140:1337/send_usage?u1={}&u2={}".format(self.user1_id, self.user2_id), timeout=0.5)
+        try:
+            requests.get("http://138.68.106.140:1337/send_usage?u1={}&u2={}".format(self.user1_id, self.user2_id), timeout=0.5)
+        except Exception: pass
 
         start_time = time.clock()
         self._prepare_data()

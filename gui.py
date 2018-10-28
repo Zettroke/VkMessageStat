@@ -8,8 +8,11 @@ import requests
 import re
 import traceback
 from threading import Thread
+import time
 
 from vk_messages_stats import stats
+
+sys.stderr = open("error.txt", "w", encoding='utf-8')
 
 if getattr(sys, 'frozen', False):
     base_dir = sys._MEIPASS
@@ -214,11 +217,27 @@ class GUI:
         self.t.delete('1.0', END)
         self.t.configure(state=DISABLED)
 
-        t = Thread(target=stats.make_stats,
+        t = Thread(target=self.stat_wrapper,
                    args=(self.access_token, user_id, ['vk_basic_stats.vk_base_stats']),
                    kwargs=dict(post_message_func=self.message, post_progress_func=self.progress, callback=self.stat_done),
                    daemon=True)
         t.start()
+
+    def stat_wrapper(self, *args, **kwargs):
+
+        try:
+            stats.make_stats(*args, **kwargs)
+        except Exception:
+            t = Toplevel(self.root)
+            l = Label(t, text="Произошла непредвиденная ошибка. Программа будет закрыта.\n"
+                              "Вы можете отправить файл error.txt автору программы, что бы он её есправил.\n"
+                              "Извините за причененные неудобства")
+            l.pack()
+            time.sleep(5)
+            self.root.destroy()
+            exit(-1)
+
+
 
     def stat_done(self):
         self.start_button.configure(state=NORMAL)
