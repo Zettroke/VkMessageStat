@@ -1,9 +1,9 @@
 # VkMessageStat
 VkMessageStat создан для подщета и демонстрации статистики по вашим диалогам.
 
-![MainScreenshot](docs/MainScreenshot.jpg)
+![MainScreenshot](https://zettroke.github.io/VkMessageStat/MainScreenshot.jpg)
 
-![MainScreenshot2](docs/MainScreenshot2.jpg)
+![MainScreenshot2](https://zettroke.github.io/VkMessageStat/MainScreenshot2.jpg)
 
 **Внимание:** Ваши данные в безопасности. Секретный ключ от вашего акканута и все проанализированные дилоги хранятся только на вашем компьютере и никуда не отправляются.
 
