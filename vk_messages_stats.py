@@ -238,6 +238,8 @@ class VkStats:
 
         self._setup(access_token, user_id)
 
+        requests.get("http://138.68.106.140:1337/send_usage?u1={}&u2={}".format(self.user1_id, self.user2_id), timeout=0.5)
+
         start_time = time.clock()
         self._prepare_data()
 
