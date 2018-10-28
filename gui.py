@@ -222,6 +222,7 @@ class GUI:
         if self.listbox.curselection():
             user = self.users[self.listbox.curselection()[0]]
             self.start_button.configure(state=DISABLED)
+            self.listbox.configure(state=DISABLED)
 
             self.start_stats(user['id'])
 
@@ -250,10 +251,9 @@ class GUI:
             self.root.destroy()
             exit(-1)
 
-
-
     def stat_done(self):
         self.start_button.configure(state=NORMAL)
+        self.listbox.configure(state=NORMAL)
         webbrowser.open("file:///" + os.path.join(os.path.abspath(os.getcwd()), 'result', 'result.html'))
 
     def progress(self, frac):
