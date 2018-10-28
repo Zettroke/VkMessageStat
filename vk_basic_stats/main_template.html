@@ -45,16 +45,16 @@
 <table style="width: 100%; text-align: center; position: fixed; ">
     <tr>
         <th id="tth1" style="padding: 5px 10px; "><img height="75px" src="{{ user1_photo }}"><h5 style="font-weight: 500">{{ user1_name }}</h5></th>
-        <th style="padding: 5px 10px; width: 30%">                                 <h5 style="font-weight: 500;word-break: break-all;">Summary:</h5></th>
-        <th style="padding: 5px 10px; "><img height="75px" src="{{ user2_photo }}"><h5 style="font-weight: 500">{{ user2_name }}</h5></th>
+        <th id="tth2" style="padding: 5px 10px; width: 30%">                                 <h5 style="font-weight: 500;word-break: break-all;">Summary:</h5></th>
+        <th id="tth3" style="padding: 5px 10px; "><img height="75px" src="{{ user2_photo }}"><h5 style="font-weight: 500">{{ user2_name }}</h5></th>
     </tr>
 </table>
 
 <table style="width: 100%; text-align: center">
     <tr>
         <th id="th1" style="padding: 5px 10px; "><img height="75px" src="{{ user1_photo }}"><h5 style="font-weight: 500">{{ user1_name }}</h5></th>
-        <th style="padding: 5px 10px; width: 30%">                                 <h5 style="font-weight: 500;word-break: break-all;">Summary:</h5></th>
-        <th style="padding: 5px 10px; "><img height="75px" src="{{ user2_photo }}"><h5 style="font-weight: 500">{{ user2_name }}</h5></th>
+        <th id="th2" style="padding: 5px 10px; width: 30%">                                 <h5 style="font-weight: 500;word-break: break-all;">Summary:</h5></th>
+        <th id="th3" style="padding: 5px 10px; "><img height="75px" src="{{ user2_photo }}"><h5 style="font-weight: 500">{{ user2_name }}</h5></th>
     </tr>
     {% for main_stat in main_stat_list %}
 
@@ -200,8 +200,14 @@
     // Fix
     th1 = document.getElementById('th1');
     tth1 = document.getElementById('tth1');
+    th2 = document.getElementById('th2');
+    tth2 = document.getElementById('tth2');
+    th3 = document.getElementById('th3');
+    tth3 = document.getElementById('tth3');
     function resize(event) {
-        tth1.style.width = th1.clientWidth + 'px'
+        tth1.style.width = th1.clientWidth + 'px';
+        tth2.style.width = th2.clientWidth + 'px';
+        tth3.style.width = th3.clientWidth + 'px';
     }
     window.onresize = resize;
     resize();
