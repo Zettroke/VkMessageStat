@@ -87,9 +87,9 @@
     {% endif %}
     {% if main_stat.stickers %}
         <tr style="{% if loop.index is even %}background-color: #bbdefb;{% endif %}">
-            <td><img src="{{ main_stat.user1_sticker }}"></td>
+            <td>{% if main_stat.user1_sticker %}<img src="{{ main_stat.user1_sticker }}"> {% else %}-{% endif %}</td>
             <td></td>
-            <td><img src="{{ main_stat.user2_sticker }}"></td>
+            <td>{% if main_stat.user2_sticker %}<img src="{{ main_stat.user2_sticker }}"> {% else %}-{% endif %}</td>
         </tr>
 
     {% endif %}

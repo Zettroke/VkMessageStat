@@ -144,7 +144,7 @@ def stat_get_word_pair_count_by_user():
     mlt2 = total_comb2/word_comb2[0][1]
 
     res1, res2 = [], []
-    for i in range(max_entrys):
+    for i in range(min(max_entrys, len(word_comb1), len(word_comb2))):
         wc = word_comb1[i]
         res1.append({'word': wc[0], 'count': wc[1], 'width': mlt1 * wc[1] / total_comb1 * 100})
 

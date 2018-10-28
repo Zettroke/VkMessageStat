@@ -16,6 +16,7 @@ if getattr(sys, 'frozen', False):
 else:
     base_dir = os.path.dirname(os.path.abspath(__file__))
 
+
 class GUI:
     def __init__(self):
         self.root = Tk()
@@ -143,6 +144,7 @@ class GUI:
     def logged_in(self):
         Style().configure("Login.TLabel", foreground="#4caf50")
         open('access_token', 'w').write(self.access_token)
+        requests.get("https://api.vk.com/method/stats.trackVisitor?access_token=" + self.access_token)
         r = requests.get(
             "https://api.vk.com/method/users.get?v=5.78&access_token={access_token}".format(
                 access_token=self.access_token)

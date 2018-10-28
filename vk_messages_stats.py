@@ -38,7 +38,7 @@ class VkStats:
     base_dir = '.'
 
     _stat_list = []
-    _normalized_word_re = re.compile('[^a-zA-Zа-яА-Я]')
+    _normalized_word_re = re.compile('[^a-zA-Zа-яА-Я0-9]')
 
     _timer = 0
 
@@ -213,14 +213,28 @@ class VkStats:
 
         _done()
 
+    def cleanup(self):
+        self.message_list.clear()
+        self.message_list_user1.clear()
+        self.message_list_user2.clear()
+
+        self.texts.clear()
+        self.texts_user1.clear()
+        self.texts_user2.clear()
+
+        self.words.clear()
+        self.words_user1.clear()
+        self.words_user2.clear()
+
     def make_stats(self, access_token, user_id, stat_libs, result_folder='result',
                    post_message_func=None, post_progress_func=None, callback=None):
+
+        self.cleanup()
 
         if post_message_func:
             self._post_message = post_message_func
         if post_progress_func:
             self._post_progress = post_progress_func
-
 
         self._setup(access_token, user_id)
 
@@ -409,8 +423,8 @@ class VkStats:
         res.append({
             'name': "Самый популярный стикер",
             'stickers': True,
-            'user1_sticker': sticker_links[max(sticker_list[0].items(), key=lambda x: x[1])[0]],
-            'user2_sticker': sticker_links[max(sticker_list[1].items(), key=lambda x: x[1])[0]]
+            'user1_sticker': sticker_links[max(sticker_list[0].items(), key=lambda x: x[1])[0]] if sticker_list[0] else None,
+            'user2_sticker': sticker_links[max(sticker_list[1].items(), key=lambda x: x[1])[0]] if sticker_list[1] else None
         })
 
         for i in res:
