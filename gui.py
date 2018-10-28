@@ -21,17 +21,30 @@ else:
 
 
 class GUI:
+
+
     def __init__(self):
         self.root = Tk()
         self.root.title("VkMessageStat")
         self.root.iconbitmap(os.path.join(base_dir, "icon.ico"))
         self.root.geometry('661x617')
         Style().configure("Login.TLabel", foreground="#777777", font=("Arial", 12))
+        Style().configure("Link.TLabel", foreground="#039be5", font=("Arial", 12))
 
         Style().configure("TFrame", bg="#ff0000")
 
         self.login_status_label = Label(self.root, text="Проверка логина...", style="Login.TLabel")
         self.login_status_label.pack(side=TOP, pady=10)
+
+        frame = Frame(self.root)
+        lab = Label(frame, text="Автор", style="Link.TLabel", cursor='hand2')
+        lab.bind('<Button-1>', lambda x=None: webbrowser.open("https://vk.com/zettroke"))
+        lab.pack(side=LEFT, padx=5)
+        lab = Label(frame, text="GitHub", style="Link.TLabel", cursor='hand2')
+        lab.bind('<Button-1>', lambda x=None: webbrowser.open("https://github.com/Zettroke/VkMessageStat"))
+        lab.pack(side=LEFT, padx=5)
+
+        frame.place(x=0, y=0)
 
         self.login_button = Button(self.root, text='Войти', state=DISABLED, command=self.proceed_login)
         self.login_button.pack()

@@ -8,6 +8,7 @@ import re
 from threading import Thread, RLock, Lock
 import sys
 import itertools
+from datetime import datetime
 
 
 class VkStats:
@@ -291,6 +292,14 @@ class VkStats:
         ans = {}
         res = []
 
+        delta_time = self.message_list[-1]['date'] - self.message_list[0]['date']
+        delta_days = round(delta_time/86400)
+
+        res.append({
+            'name': "Общее время общения",
+            'data': ('', '{} дней'.format(delta_days, 0), '')
+        })
+
         # ------message_num-------
         res.append({
             'name': "Колчичество сообщений",
@@ -312,6 +321,11 @@ class VkStats:
         res.append({
             'name': "Колчичество букв",
             'data': (sum(map(len, self.words_user1)), sum(map(len, self.words)), sum(map(len, self.words_user2)))
+        })
+
+        res.append({
+            'name': "Сообщений в день (в среднем)",
+            'data': (len(self.texts_user1)/delta_days, len(self.texts)/delta_days, len(self.texts_user2)/delta_days)
         })
 
         res.append({
