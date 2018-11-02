@@ -470,9 +470,7 @@ class VkStats:
         prev = self.message_list[0]
         for i in range(1, len(self.message_list)):
             msg = self.message_list[i]
-            d_p = prev['date']
-            d = msg['date']
-            pause_list.append((d - d_p, prev, msg))
+            pause_list.append((msg['date'] - prev['date'], prev))
             prev = msg
         pause_list.sort(reverse=True, key=lambda x: x[0])
 
