@@ -8,7 +8,7 @@ import re
 from threading import Thread, RLock, Lock
 import sys
 import itertools
-from datetime import datetime
+from datetime import datetime, date
 
 
 class VkStats:
@@ -199,9 +199,9 @@ class VkStats:
         _msg('Preparing basic data set: ')
 
         for msg in self.message_list:
-            if msg['from_id'] == self.user1_id:
+            if msg['out']:
                 self.message_list_user1.append(msg)
-            if msg['from_id'] == self.user2_id:
+            else:
                 self.message_list_user2.append(msg)
 
         self.texts = list(map(lambda x: x['body'], self.message_list))
@@ -389,6 +389,19 @@ class VkStats:
                 cnt2)
         })
 
+        self._attach_stat(ans, res)
+
+        self._dialog_start_stat(ans, res)
+
+        for i in res:
+            if 'data' in i:
+                i['data'] = [round(x, 3) if type(x) == float else x for x in i['data']]
+
+        ans['list'] = res
+
+        return ans
+
+    def _attach_stat(self, ans, res):
         att_types = {"photo", 'video', 'audio', 'doc', 'audio_doc', 'audio_message', 'sticker'}
         u1_attach = {"photo": 0, 'video': 0, 'audio': 0, 'doc': 0, 'audio_doc': 0, 'sticker': 0}
         u2_attach = {"photo": 0, 'video': 0, 'audio': 0, 'doc': 0, 'audio_doc': 0, 'sticker': 0}
@@ -412,8 +425,10 @@ class VkStats:
                                 attach_dict['audio_doc'] += 1
                             elif att['type'] == 'sticker':
                                 attach_dict['sticker'] += 1
-                                sticker_name = '_'.join([str(att['sticker']['product_id']), str(att['sticker']['sticker_id'])])
-                                sticker_links[sticker_name] = att['sticker']['images_with_background'][2]['url']  # 256x256 image
+                                sticker_name = '_'.join(
+                                    [str(att['sticker']['product_id']), str(att['sticker']['sticker_id'])])
+                                sticker_links[sticker_name] = att['sticker']['images_with_background'][2][
+                                    'url']  # 256x256 image
                                 stikers[sticker_name] = stikers.get(sticker_name, 0) + 1
                             else:
                                 attach_dict[att['type']] += 1
@@ -443,17 +458,48 @@ class VkStats:
         res.append({
             'name': "Самый популярный стикер",
             'stickers': True,
-            'user1_sticker': sticker_links[max(sticker_list[0].items(), key=lambda x: x[1])[0]] if sticker_list[0] else None,
-            'user2_sticker': sticker_links[max(sticker_list[1].items(), key=lambda x: x[1])[0]] if sticker_list[1] else None
+            'user1_sticker': sticker_links[max(sticker_list[0].items(), key=lambda x: x[1])[0]] if sticker_list[
+                0] else None,
+            'user2_sticker': sticker_links[max(sticker_list[1].items(), key=lambda x: x[1])[0]] if sticker_list[
+                1] else None
         })
 
-        for i in res:
-            if 'data' in i:
-                i['data'] = [round(x, 3) if type(x) == float else x for x in i['data']]
+    def _dialog_start_stat(self, ans, res):
+        pass
+        pause_list = []
+        prev = self.message_list[0]
+        for i in range(1, len(self.message_list)):
+            msg = self.message_list[i]
+            d_p = prev['date']
+            d = msg['date']
+            pause_list.append((d - d_p, prev, msg))
+            prev = msg
+        pause_list.sort(reverse=True, key=lambda x: x[0])
 
-        ans['list'] = res
+        date_set = set()
+        for msg in self.message_list:
+            date_set.add(date.fromtimestamp(msg['date']))
 
-        return ans
+        threshold = pause_list[len(date_set)][0]
+
+        u1_start = 0
+        u2_start = 0
+        for p in pause_list:
+            if p[0] > threshold:
+                if p[1]['out']:
+                    u1_start += 1
+                else:
+                    u2_start += 1
+            else:
+                break
+
+        res.append({
+            'name': "Сколько раз начал разговор",
+            'data': (
+                u1_start,
+                u1_start + u2_start,
+                u2_start)
+        })
 
 
 stats = VkStats()
