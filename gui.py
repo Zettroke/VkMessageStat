@@ -94,6 +94,7 @@ class GUI:
                                                    'Попробуйте снова')
 
     def proceed_login(self):
+        self.login_button.configure(state=DISABLED)
         t = Toplevel(self.root)
         t.iconbitmap(os.path.join(base_dir, "icon.ico"))
         t.title("Login")
@@ -156,6 +157,11 @@ class GUI:
         e.bind("<Button-3>", do_popup)
 
         self.root.after(200, lambda: webbrowser.open("https://zettroke.github.io/VkMessageStat/login_page"))
+
+        def top_level_close():
+            self.login_button.configure(state=NORMAL)
+            t.destroy()
+        t.protocol("WM_DELETE_WINDOW", top_level_close)
 
     def logged_in(self):
         Style().configure("Login.TLabel", foreground="#4caf50")
