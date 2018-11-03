@@ -22,7 +22,6 @@ else:
 
 class GUI:
 
-
     def __init__(self):
         self.root = Tk()
         self.root.title("VkMessageStat")
@@ -32,6 +31,8 @@ class GUI:
         Style().configure("Link.TLabel", foreground="#039be5", font=("Arial", 12))
 
         Style().configure("TFrame", bg="#ff0000")
+
+        self.is_working = False
 
         self.login_status_label = Label(self.root, text="Проверка логина...", style="Login.TLabel")
         self.login_status_label.pack(side=TOP, pady=10)
@@ -225,7 +226,8 @@ class GUI:
         self.prog_bar.pack(fill=X)
 
     def listbox_select(self, event=None):
-        if self.listbox.curselection():
+        if self.listbox.curselection() and not self.is_working:
+            self.is_working = True
             user = self.users[self.listbox.curselection()[0]]
             self.start_button.configure(state=DISABLED)
             self.listbox.configure(state=DISABLED)
@@ -233,6 +235,7 @@ class GUI:
             self.start_stats(user['id'])
 
     def start_stats(self, user_id):
+
         self.t.configure(state=NORMAL)
         self.t.delete('1.0', END)
         self.t.configure(state=DISABLED)
@@ -255,11 +258,13 @@ class GUI:
             l.pack()
             time.sleep(5)
             self.root.destroy()
+            traceback.print_exc()
             exit(-1)
 
     def stat_done(self):
         self.start_button.configure(state=NORMAL)
         self.listbox.configure(state=NORMAL)
+        self.is_working = False
         webbrowser.open("file:///" + os.path.join(os.path.abspath(os.getcwd()), 'result', 'result.html'))
 
     def progress(self, frac):
